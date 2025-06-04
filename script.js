@@ -334,125 +334,144 @@ class ExpertSystem {
 
   generateRecommendations() {
     const recommendations = []
-
-    // Analyze answers to determine recommendations
     const pathScores = {}
 
+    // Calculate scores for each path
     this.answers.forEach((answer) => {
       if (answer.answer) {
         pathScores[answer.path] = (pathScores[answer.path] || 0) + 1
       }
     })
 
-    // Determine primary recommendation based on strongest path
-    const strongestPath = Object.keys(pathScores).reduce((a, b) => (pathScores[a] > pathScores[b] ? a : b))
+    // Get total questions per path for percentage calculation
+    const pathTotals = {}
+    this.answers.forEach((answer) => {
+      pathTotals[answer.path] = (pathTotals[answer.path] || 0) + 1
+    })
 
-    // Generate specific recommendations based on the path
+    // Calculate percentage scores
+    const pathPercentages = {}
+    Object.keys(pathScores).forEach((path) => {
+      pathPercentages[path] = (pathScores[path] / pathTotals[path]) * 100
+    })
+
+    // Determine primary recommendation based on strongest path and specific answers
+    const strongestPath = Object.keys(pathPercentages).reduce((a, b) =>
+      pathPercentages[a] > pathPercentages[b] ? a : b,
+    )
+
+    // Generate specific recommendations based on the strongest path and level 3 answers
     if (strongestPath.includes("kesehatan") || this.currentPath.includes("kesehatan")) {
       const level3Answers = this.answers.filter((a) => a.path === "kesehatan_spesifik")
+
       if (level3Answers.some((a) => a.questionIndex === 0 && a.answer)) {
-        recommendations.push(...this.rules.programs.kedokteran)
-      }
-      if (level3Answers.some((a) => a.questionIndex === 2 && a.answer)) {
-        recommendations.push(...this.rules.programs.farmasi)
-      }
-      if (level3Answers.some((a) => a.questionIndex === 3 && a.answer)) {
-        recommendations.push(...this.rules.programs.kesehatan_teknologi)
-      }
-      if (recommendations.length === 0) {
-        recommendations.push(...this.rules.programs.kedokteran)
+        recommendations.push("Kedokteran", "Kedokteran Gigi")
+      } else if (level3Answers.some((a) => a.questionIndex === 2 && a.answer)) {
+        recommendations.push("Farmasi", "Kimia Farmasi")
+      } else if (level3Answers.some((a) => a.questionIndex === 3 && a.answer)) {
+        recommendations.push("Rekam Medis", "Teknologi Laboratorium Medik")
+      } else if (level3Answers.some((a) => a.questionIndex === 1 && a.answer)) {
+        recommendations.push("Kesehatan Masyarakat", "Gizi")
+      } else {
+        recommendations.push("Kedokteran", "Keperawatan", "Farmasi")
       }
     } else if (strongestPath.includes("teknik") || this.currentPath.includes("teknik")) {
       const level3Answers = this.answers.filter((a) => a.path === "teknik_spesifik")
+
       if (level3Answers.some((a) => a.questionIndex === 0 && a.answer)) {
-        recommendations.push(...this.rules.programs.teknik_informatika)
-      }
-      if (level3Answers.some((a) => a.questionIndex === 2 && a.answer)) {
-        recommendations.push(...this.rules.programs.teknik_sipil)
-      }
-      if (level3Answers.some((a) => a.questionIndex === 3 && a.answer)) {
-        recommendations.push(...this.rules.programs.teknik_mesin)
-      }
-      if (level3Answers.some((a) => a.questionIndex === 4 && a.answer)) {
-        recommendations.push(...this.rules.programs.teknik_elektro)
-      }
-      if (recommendations.length === 0) {
-        recommendations.push(...this.rules.programs.teknik_informatika)
+        recommendations.push("Teknik Informatika", "Ilmu Komputer")
+      } else if (level3Answers.some((a) => a.questionIndex === 1 && a.answer)) {
+        recommendations.push("Teknik Komputer", "Sistem Informasi")
+      } else if (level3Answers.some((a) => a.questionIndex === 2 && a.answer)) {
+        recommendations.push("Teknik Sipil", "Arsitektur")
+      } else if (level3Answers.some((a) => a.questionIndex === 3 && a.answer)) {
+        recommendations.push("Teknik Mesin", "Teknik Industri")
+      } else if (level3Answers.some((a) => a.questionIndex === 4 && a.answer)) {
+        recommendations.push("Teknik Elektro", "Teknik Robotika")
+      } else if (level3Answers.some((a) => a.questionIndex === 5 && a.answer)) {
+        recommendations.push("Teknik Pertambangan", "Teknik Geologi")
+      } else {
+        recommendations.push("Teknik Informatika", "Teknik Sipil", "Teknik Elektro")
       }
     } else if (strongestPath.includes("murni") || this.currentPath.includes("murni")) {
       const level3Answers = this.answers.filter((a) => a.path === "murni_spesifik")
+
       if (level3Answers.some((a) => a.questionIndex === 0 && a.answer)) {
-        recommendations.push(...this.rules.programs.kimia)
-      }
-      if (level3Answers.some((a) => a.questionIndex === 1 && a.answer)) {
-        recommendations.push(...this.rules.programs.biologi)
-      }
-      if (level3Answers.some((a) => a.questionIndex === 2 && a.answer)) {
-        recommendations.push(...this.rules.programs.fisika)
-      }
-      if (level3Answers.some((a) => a.questionIndex === 4 && a.answer)) {
-        recommendations.push(...this.rules.programs.matematika)
-      }
-      if (recommendations.length === 0) {
-        recommendations.push(...this.rules.programs.kimia)
+        recommendations.push("Kimia", "Teknik Kimia")
+      } else if (level3Answers.some((a) => a.questionIndex === 1 && a.answer)) {
+        recommendations.push("Biologi", "Bioteknologi")
+      } else if (level3Answers.some((a) => a.questionIndex === 2 && a.answer)) {
+        recommendations.push("Fisika", "Astronomi")
+      } else if (level3Answers.some((a) => a.questionIndex === 3 && a.answer)) {
+        recommendations.push("Teknik Lingkungan", "Geografi")
+      } else if (level3Answers.some((a) => a.questionIndex === 4 && a.answer)) {
+        recommendations.push("Matematika", "Statistika")
+      } else {
+        recommendations.push("Kimia", "Biologi", "Fisika")
       }
     } else if (strongestPath.includes("hukum") || this.currentPath.includes("hukum")) {
       const level3Answers = this.answers.filter((a) => a.path === "hukum_spesifik")
+
       if (level3Answers.some((a) => a.questionIndex === 0 && a.answer)) {
-        recommendations.push(...this.rules.programs.hukum)
-      }
-      if (level3Answers.some((a) => a.questionIndex === 1 && a.answer)) {
-        recommendations.push(...this.rules.programs.politik)
-      }
-      if (recommendations.length === 0) {
-        recommendations.push(...this.rules.programs.hukum)
+        recommendations.push("Ilmu Hukum", "Hukum Bisnis")
+      } else if (level3Answers.some((a) => a.questionIndex === 1 && a.answer)) {
+        recommendations.push("Hubungan Internasional", "Ilmu Politik")
+      } else if (level3Answers.some((a) => a.questionIndex === 2 && a.answer)) {
+        recommendations.push("Administrasi Publik", "Ilmu Pemerintahan")
+      } else if (level3Answers.some((a) => a.questionIndex === 3 && a.answer)) {
+        recommendations.push("Ilmu Hukum", "Kriminologi")
+      } else {
+        recommendations.push("Ilmu Hukum", "Ilmu Politik")
       }
     } else if (strongestPath.includes("ekonomi") || this.currentPath.includes("ekonomi")) {
       const level3Answers = this.answers.filter((a) => a.path === "ekonomi_spesifik")
+
       if (level3Answers.some((a) => a.questionIndex === 0 && a.answer)) {
-        recommendations.push(...this.rules.programs.bisnis)
-      }
-      if (level3Answers.some((a) => a.questionIndex === 1 && a.answer)) {
-        recommendations.push(...this.rules.programs.ekonomi)
-      }
-      if (level3Answers.some((a) => a.questionIndex === 2 && a.answer)) {
-        recommendations.push(...this.rules.programs.manajemen)
-      }
-      if (recommendations.length === 0) {
-        recommendations.push(...this.rules.programs.manajemen)
+        recommendations.push("Kewirausahaan", "Manajemen Bisnis")
+      } else if (level3Answers.some((a) => a.questionIndex === 1 && a.answer)) {
+        recommendations.push("Ekonomi", "Akuntansi")
+      } else if (level3Answers.some((a) => a.questionIndex === 2 && a.answer)) {
+        recommendations.push("Manajemen", "Administrasi Bisnis")
+      } else if (level3Answers.some((a) => a.questionIndex === 3 && a.answer)) {
+        recommendations.push("Manajemen Pemasaran", "Bisnis Digital")
+      } else {
+        recommendations.push("Manajemen", "Ekonomi", "Akuntansi")
       }
     } else if (strongestPath.includes("sosial") || this.currentPath.includes("sosial")) {
       const level3Answers = this.answers.filter((a) => a.path === "sosial_spesifik")
+
       if (level3Answers.some((a) => a.questionIndex === 0 && a.answer)) {
-        recommendations.push(...this.rules.programs.komunikasi)
-      }
-      if (level3Answers.some((a) => a.questionIndex === 1 && a.answer)) {
-        recommendations.push(...this.rules.programs.kreatif)
-      }
-      if (level3Answers.some((a) => a.questionIndex === 2 && a.answer)) {
-        recommendations.push(...this.rules.programs.pendidikan)
-      }
-      if (level3Answers.some((a) => a.questionIndex === 3 && a.answer)) {
-        recommendations.push(...this.rules.programs.sastra)
-      }
-      if (recommendations.length === 0) {
-        recommendations.push(...this.rules.programs.sosiologi)
+        recommendations.push("Jurnalistik", "Ilmu Komunikasi")
+      } else if (level3Answers.some((a) => a.questionIndex === 1 && a.answer)) {
+        recommendations.push("Desain Komunikasi Visual", "Film dan Televisi")
+      } else if (level3Answers.some((a) => a.questionIndex === 2 && a.answer)) {
+        recommendations.push("Pendidikan", "PGSD")
+      } else if (level3Answers.some((a) => a.questionIndex === 3 && a.answer)) {
+        recommendations.push("Sastra Indonesia", "Linguistik")
+      } else if (level3Answers.some((a) => a.questionIndex === 4 && a.answer)) {
+        recommendations.push("Sosiologi", "Psikologi")
+      } else if (level3Answers.some((a) => a.questionIndex === 5 && a.answer)) {
+        recommendations.push("Ilmu Komunikasi", "Sosiologi")
+      } else {
+        recommendations.push("Ilmu Komunikasi", "Sosiologi", "Psikologi")
       }
     }
 
-    // Fallback recommendations
+    // Fallback recommendations with limited options
     if (recommendations.length === 0) {
       const saintekAnswers = this.answers.filter((a) => a.path === "general" && a.answer).length
       const soshumAnswers = this.answers.filter((a) => a.path === "soshum_general" && a.answer).length
 
       if (saintekAnswers >= soshumAnswers) {
-        recommendations.push("Teknik Informatika", "Matematika", "Fisika")
+        recommendations.push("Teknik Informatika", "Matematika")
       } else {
-        recommendations.push("Manajemen", "Ilmu Komunikasi", "Psikologi")
+        recommendations.push("Manajemen", "Ilmu Komunikasi")
       }
     }
 
-    return [...new Set(recommendations)] // Remove duplicates
+    // Remove duplicates and limit to maximum 5 recommendations
+    const uniqueRecommendations = [...new Set(recommendations)]
+    return uniqueRecommendations.slice(0, 5)
   }
 
   displayCurrentQuestion() {
@@ -495,18 +514,19 @@ class ExpertSystem {
 
     const resultContent = document.getElementById("resultContent")
     resultContent.innerHTML = `
-            <div class="recommendation">
-                <h3>🎯 Rekomendasi Program Studi untuk Anda:</h3>
-                <ul class="recommendation-list">
-                    ${recommendations.map((program) => `<li>• ${program}</li>`).join("")}
-                </ul>
-            </div>
-            <div class="analysis-section">
-                <h3>📊 Ringkasan Analisis</h3>
-                <p>Berdasarkan ${this.answers.length} pertanyaan yang telah dijawab, sistem merekomendasikan program studi di atas yang paling sesuai dengan minat dan karakteristik Anda.</p>
-                <p><strong>Tingkat Kepercayaan:</strong> ${this.calculateConfidence()}%</p>
-            </div>
-        `
+          <div class="recommendation">
+              <h3>🎯 Top ${recommendations.length} Rekomendasi Program Studi untuk Anda:</h3>
+              <ul class="recommendation-list">
+                  ${recommendations.map((program, index) => `<li><strong>${index + 1}.</strong> ${program}</li>`).join("")}
+              </ul>
+          </div>
+          <div class="analysis-section">
+              <h3>📊 Ringkasan Analisis</h3>
+              <p>Berdasarkan ${this.answers.length} pertanyaan yang telah dijawab, sistem telah memilih ${recommendations.length} program studi yang paling sesuai dengan minat dan karakteristik Anda.</p>
+              <p><strong>Tingkat Kepercayaan:</strong> ${this.calculateConfidence()}%</p>
+              <p><em>Rekomendasi diurutkan berdasarkan tingkat kesesuaian tertinggi.</em></p>
+          </div>
+      `
 
     this.updateProgress()
   }
