@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Pakar Rekomendasi Bidang Studi</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎓 Sistem Pakar Rekomendasi Bidang Studi</h1>
+            <p>Temukan bidang studi yang tepat untuk masa depanmu!</p>
+        </header>
+
+        <div class="progress-container">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <span class="progress-text" id="progressText">0%</span>
+        </div>
+
+        <main id="mainContent">
+            <div class="welcome-screen" id="welcomeScreen">
+                <div class="welcome-card">
+                    <h2>Selamat Datang!</h2>
+                    <p>Sistem ini akan membantu Anda menemukan bidang studi yang sesuai dengan minat dan bakat Anda melalui serangkaian pertanyaan.</p>
+                    <div class="features">
+                        <div class="feature">
+                            <span class="icon">🔬</span>
+                            <span>SAINTEK (Sains & Teknologi)</span>
+                        </div>
+                        <div class="feature">
+                            <span class="icon">📚</span>
+                            <span>SOSHUM (Sosial & Humaniora)</span>
+                        </div>
+                    </div>
+                    <button class="btn-primary" onclick="startExpertSystem()">Mulai Tes</button>
+                </div>
+            </div>
+
+            <div class="question-screen" id="questionScreen" style="display: none;">
+                <div class="question-card">
+                    <div class="question-header">
+                        <span class="question-number" id="questionNumber">Pertanyaan 1</span>
+                        <span class="level-indicator" id="levelIndicator">Level 1</span>
+                    </div>
+                    <h2 class="question-text" id="questionText"></h2>
+                    <div class="answer-buttons">
+                        <button class="btn-answer btn-yes" onclick="answerQuestion(true)">
+                            <span class="icon">✓</span>
+                            Ya
+                        </button>
+                        <button class="btn-answer btn-no" onclick="answerQuestion(false)">
+                            <span class="icon">✗</span>
+                            Tidak
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="result-screen" id="resultScreen" style="display: none;">
+                <div class="result-card">
+                    <div class="result-header">
+                        <span class="icon">🎯</span>
+                        <h2>Hasil Rekomendasi</h2>
+                    </div>
+                    <div class="result-content" id="resultContent"></div>
+                    <div class="result-actions">
+                        <button class="btn-primary" onclick="restartSystem()">Ulangi Tes</button>
+                        <button class="btn-secondary" onclick="showDetailedAnalysis()">Lihat Analisis Detail</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="analysis-screen" id="analysisScreen" style="display: none;">
+                <div class="analysis-card">
+                    <h2>Analisis Detail Jawaban</h2>
+                    <div class="analysis-content" id="analysisContent"></div>
+                    <button class="btn-primary" onclick="backToResult()">Kembali ke Hasil</button>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <p>© 2024 Sistem Pakar Rekomendasi Bidang Studi - Forward Chaining Method</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
