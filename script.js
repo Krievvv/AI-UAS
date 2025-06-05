@@ -528,7 +528,9 @@ class ExpertSystem {
           </div>
       `
 
-    this.updateProgress()
+    // Directly set progress to 100% for the results screen
+    document.getElementById("progressFill").style.width = `100%`;
+    document.getElementById("progressText").textContent = `100%`;
   }
 
   calculateConfidence() {
@@ -550,30 +552,30 @@ class ExpertSystem {
             <div class="analysis-section">
                 <h3>📈 Analisis Berdasarkan Bidang</h3>
                 ${Object.entries(pathAnalysis)
-                  .map(
-                    ([path, data]) => `
+        .map(
+          ([path, data]) => `
                     <div class="answer-item ${data.score > 50 ? "positive" : "negative"}">
                         <strong>${this.getPathDisplayName(path)}</strong><br>
                         Skor: ${data.score}% (${data.positive}/${data.total} jawaban positif)
                     </div>
                 `,
-                  )
-                  .join("")}
+        )
+        .join("")}
             </div>
             
             <div class="analysis-section">
                 <h3>📝 Detail Jawaban</h3>
                 <div class="answer-summary">
                     ${this.answers
-                      .map(
-                        (answer, index) => `
+        .map(
+          (answer, index) => `
                         <div class="answer-item ${answer.answer ? "positive" : "negative"}">
                             <strong>Q${index + 1}:</strong> ${answer.question}<br>
                             <strong>Jawaban:</strong> ${answer.answer ? "Ya" : "Tidak"}
                         </div>
                     `,
-                      )
-                      .join("")}
+        )
+        .join("")}
                 </div>
             </div>
         `
