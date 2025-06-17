@@ -12,8 +12,13 @@ class ExpertSystem {
 
   initializeQuestions() {
     return {
-      // Level 1: General SAINTEK
+      // Level 1: Single General Question
       general: [
+        "Apakah kamu lebih tertarik dengan ilmu alam dan teknologi (SAINTEK) dibandingkan ilmu sosial dan humaniora (SOSHUM)?",
+      ],
+
+      // Level 1: General SAINTEK
+      saintek: [
         "Apakah kamu tertarik mempelajari ilmu alam dan teknologi?",
         "Apakah kamu senang menyelesaikan soal-soal logika atau matematika?",
         "Apakah kamu lebih suka melakukan eksperimen ilmiah daripada membaca teori sosial?",
@@ -199,23 +204,23 @@ class ExpertSystem {
   }
 
   applyForwardChaining() {
-    // Level 1: Determine SAINTEK vs SOSHUM
+    // Level 1: Determine SAINTEK vs SOSHUM based on single question
     if (this.currentPath === "general") {
-      if (this.currentQuestionIndex >= this.questions.general.length) {
-        const saintekScore = this.answers.filter((a) => a.path === "general" && a.answer).length
+        if (this.currentQuestionIndex >= this.questions.general.length) {
+            const isSaintek = this.answers[0].answer; // Get the answer to the single question
 
-        if (saintekScore >= 3) {
-          // Go to SAINTEK Level 2
-          this.currentLevel = 2
-          this.currentPath = "saintek_kesehatan"
-          this.currentQuestionIndex = 0
-        } else {
-          // Go to SOSHUM Level 1
-          this.currentLevel = 1
-          this.currentPath = "soshum_general"
-          this.currentQuestionIndex = 0
+            if (isSaintek) {
+                // Go to SAINTEK Level 2
+                this.currentLevel = 2;
+                this.currentPath = "saintek_kesehatan";
+                this.currentQuestionIndex = 0;
+            } else {
+                // Go to SOSHUM Level 1
+                this.currentLevel = 1;
+                this.currentPath = "soshum_general";
+                this.currentQuestionIndex = 0;
+            }
         }
-      }
     }
 
     // SOSHUM Level 1 Complete
